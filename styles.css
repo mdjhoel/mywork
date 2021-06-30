@@ -1,0 +1,24 @@
+/* this is the comment for CSS */
+h1 {
+  color: #ccffcc;
+}
+body {
+  background-color: pink;
+  margin: 0px;
+}
+#thorimage {
+  width:300px;
+  border:25px solid red;
+}
+#twoh1 {
+  color: blue;
+}
+.navbar {
+  background-color: black;
+  color: white;
+  padding: 15px;
+}
+#mylink {
+  float: right;
+  color: white;
+}
