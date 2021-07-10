@@ -16,6 +16,8 @@
     <!-- chart.js import -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 
+    <script src='weather.json'></script>
+
     <style>
       #wicon {
         padding: 5px;
@@ -78,6 +80,10 @@
     </div> <!-- end of 2nd row -->
 
     <div class="row">
+      <div id="photos"></div>
+    </div>
+
+    <div class="row">
 
       <div class="col s12 m6">
         <div class="card">
@@ -110,9 +116,28 @@
         var city = response.data.city;
         geoData(response.data);
         var wstring = 'https://www.7timer.info/bin/civillight.php?lon=' + lon + '&lat=' + lat + '&unit=metric&output=json';
-        weatherData(wstring);
+        //weatherData(wstring);
         mapIt(lat,lon,city);
+        getPhotos(lat,lon);
       })
+
+    function getPhotos(lat,lon) {
+      axios.get("https://commons.wikimedia.org/w/api.php?format=json&action=query&generator=geosearch&ggsprimary=all&ggsnamespace=6&ggsradius=10000&ggscoord=" + lat + "|" + lon + "&ggslimit=3&prop=imageinfo&iilimit=1&iiprop=url&iiurlheight=300&origin=*")
+        .then(response => {
+          var dHandle = document.getElementById('photos');
+          var arr = Object.values(response.data.query.pages);
+          var myHTML = "";
+          for (i=0;i<arr.length;i++) {
+            myHTML = myHTML + "<div class='col s12 m4'>";
+            myHTML = myHTML + "<div class='card'>";
+            console.log(arr[i].imageinfo);
+            myHTML = myHTML + "<img src='" + arr[i].imageinfo[0].thumburl + "' style='width:100%;height:100%;padding:10px;'>";
+            myHTML = myHTML + "</div></div>";
+          }
+          dHandle.innerHTML = myHTML;
+          console.log(arr);
+        })
+    }
 
     function barChart(wdata) {
       // Bar chart
@@ -190,9 +215,9 @@
 
       L.circle([lat,lon],{color:'red',radius:200}).addTo(map).bindPopup('<h6>' + city + '</h6>');
 
-      L.marker([lat, lon],{color:'red'}).addTo(map)
-          .bindPopup('<h6>' + city + '</h6>')
-          .openPopup();
+      //L.marker([lat, lon],{color:'red'}).addTo(map)
+      //    .bindPopup('<h6>' + city + '</h6>')
+      //    .openPopup();
     }
 
     function geoData(response) {
@@ -201,20 +226,25 @@
     }
 
     function weatherData(wstring) {
+      /*
       axios.get(wstring)
         .then(response => {
           console.log(response);
           var w = response.data.dataseries[0];
+          */
+          var w = wdata.dataseries[0];
           var gHandle = document.getElementById('weather');
           var myHTML = "<p>Todays weather is " + w.weather + "</p>";
           myHTML = myHTML + "<div id='wicon'><i class='wi wi-day-cloudy'></i>  " + w.temp2m.max + "</div>";
           gHandle.innerHTML = myHTML;
-          lineGraph(response.data.dataseries);
-          barChart(response.data.dataseries);
-        })
+          //lineGraph(response.data.dataseries);
+          lineGraph(wdata.dataseries);
+          barChart(wdata.dataseries);
+          //barChart(response.data.dataseries);
+        //})
+
+
     }
-
-
 
   </script>
 
