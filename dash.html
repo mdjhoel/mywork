@@ -17,6 +17,7 @@
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.12/css/weather-icons.min.css'></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 
+    <script src='weather.json'></script>
 
     <style>
       .card {
@@ -32,9 +33,7 @@
           <i class="large material-icons">wb_sunny</i> My community page
         </a>
         <ul id="nav-mobile" class="right hide-on-med-and-down">
-          <li><a href="sass.html">Sass</a></li>
-          <li><a href="badges.html">Components</a></li>
-          <li><a href="collapsible.html">JavaScript</a></li>
+          <li><a href="about.html">About</a></li>
         </ul>
       </div>
     </nav>
@@ -116,14 +115,14 @@
 
       function getPhotos(lat,lon) {
         // awesome API for COVID
-        axios.get("https://commons.wikimedia.org/w/api.php?format=json&action=query&generator=geosearch&ggsprimary=all&ggsnamespace=6&ggsradius=10000&ggscoord=" + lat + "|" + lon + "&ggslimit=3&prop=imageinfo&iilimit=1&iiprop=url&iiurlheight=300&origin=*")
+        axios.get("https://commons.wikimedia.org/w/api.php?format=json&action=query&generator=geosearch&ggsprimary=all&ggsnamespace=6&ggsradius=5000&ggscoord=" + lat + "|" + lon + "&ggslimit=4&prop=imageinfo&iilimit=1&iiprop=url&iiurlheight=250&origin=*")
           .then(response => {
             // change object data to an array for easy looping
             var arr = Object.values(response.data.query.pages);
             var divHandle = document.getElementById('photos');
             myHTML = "";
             for (i=0;i<arr.length;i++) {
-              myHTML = myHTML + "<div class='col s12 m4'><div class='card' style='padding:10px'>";
+              myHTML = myHTML + "<div class='col s12 m3'><div class='card' style='padding:10px'>";
               myHTML = myHTML + "<img src='" + arr[i].imageinfo['0'].thumburl + "' style='width: 100%; height:100%'>";
               myHTML = myHTML + "</div></div>";
             }
@@ -223,10 +222,12 @@
     }
 
     function weatherData(wstring) {
-      axios.get(wstring)
-        .then(response => {
+      //axios.get(wstring)
+        //.then(response => {
           console.log(response);
-          var d = response.data.dataseries[0]
+          var response = wdata;
+          //var d = response.data.dataseries[0]
+          var d = response.dataseries[0]
 
           if (d.weather == 'cloudy') {
             var icon = "<i class='wi wi-day-cloudy'></i>";
@@ -238,9 +239,11 @@
           myHTML = myHTML + "<div style='padding:5px; font-size:40px;'>" + icon + "  " + d.temp2m.max + "</div>"
           gHandle.innerHTML = myHTML;
 
-          lineChart(response.data.dataseries);
-          barChart(response.data.dataseries);
-        })
+          //lineChart(response.data.dataseries);
+          //barChart(response.data.dataseries);
+          lineChart(response.dataseries);
+          barChart(response.dataseries);
+        //})
     }
 
 
